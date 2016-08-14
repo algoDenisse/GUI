@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <stdlib.h>
 
 GtkWidget *label_test;
 
@@ -27,9 +28,15 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
+
 void on_btn_algoritmo1_clicked()
 {
     gtk_label_set_text(GTK_LABEL(label_test), "Esto es una pruebaa!");
+    /*system("cd /home/compiladores/GUI/src");*/
+    //system("gcc pending_program.c -o pending_program");
+    //system("./pending_program");
+
 }
 
 
