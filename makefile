@@ -1,5 +1,5 @@
 # change application name here (executable output name)
-TARGET=gladewin
+TARGET=Algoritmos
 PENDING=pending_program
 
 # compiler

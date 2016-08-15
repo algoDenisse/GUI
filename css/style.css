@@ -24,7 +24,7 @@ GtkButton {
              	display:inline-block;
              	cursor:pointer;
              	color:#ffffff;
-             	font-family: fantasy;;;
+             	font-family: fantasy;
              	font-size:13px;
              	font-weight:bold;
              	padding:6px 12px;
@@ -62,4 +62,14 @@ background-image: -gtk-gradient (linear,
 #btn_salir:hover,
 #btn_salir:prelight {
    background-image: linear-gradient(red);
+}
+#btn_cerrar:hover,
+#btn_cerrar:prelight {
+   background-image: linear-gradient(red);
+}
+
+
+#lbl_mensaje{
+  color: white;
+  font: Sanz 11;
 }

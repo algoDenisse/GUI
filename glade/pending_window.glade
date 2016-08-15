@@ -9,15 +9,20 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkLabel" id="label_mensaje">
+          <object class="GtkLabel" id="lbl_mensaje">
+            <property name="name">lbl_mensaje</property>
             <property name="width_request">100</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
+            <property name="margin_right">5</property>
+            <property name="xalign">1</property>
+            <property name="yalign">0</property>
             <property name="label" translatable="yes">El programa solicitado no se encuentra disponible</property>
           </object>
           <packing>
-            <property name="x">75</property>
+            <property name="x">12</property>
             <property name="y">82</property>
           </packing>
         </child>
@@ -32,6 +37,7 @@
             <child>
               <object class="GtkButton" id="btn_terminar">
                 <property name="label" translatable="yes">Cerrar</property>
+                <property name="name">btn_cerrar</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -45,8 +51,8 @@
             </child>
           </object>
           <packing>
-            <property name="x">150</property>
-            <property name="y">143</property>
+            <property name="x">140</property>
+            <property name="y">129</property>
           </packing>
         </child>
       </object>
