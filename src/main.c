@@ -3,6 +3,7 @@
 #include <string.h>
 
 GtkWidget *label_test;
+int pid;
 
 int main(int argc, char *argv[])
 {
@@ -52,6 +53,10 @@ int main(int argc, char *argv[])
 // called when window is closed
 void on_window_main_destroy()
 {
+    if(pid == 0){
+       kill(pid, SIGTERM);
+
+    }
     gtk_main_quit();
 
 }
