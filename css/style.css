@@ -73,3 +73,8 @@ background-image: -gtk-gradient (linear,
   color: white;
   font: Sanz 11;
 }
+
+.tooltip {
+  color: white;
+}
+  

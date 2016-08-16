@@ -24,12 +24,14 @@
             <property name="layout_style">start</property>
             <child>
               <object class="GtkButton" id="btn_algoritmo1">
-                <property name="label" translatable="yes">Rutas mas cortas</property>
+                <property name="label" translatable="yes">Rutas más cortas</property>
                 <property name="name">btn_rutasCortas</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Rutas mas cortas</property>
+                <property name="tooltip_text" translatable="yes"> Algoritmo para la determinación del camino más corto dado un 
+vértice origen al resto de los vértices en un grafo con pesos
+ en cada arista.</property>
                 <property name="yalign">0.43999999761581421</property>
                 <signal name="clicked" handler="on_btn_algoritmo1_clicked" swapped="no"/>
               </object>
@@ -45,7 +47,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Problema de la Mochila</property>
+                <property name="tooltip_text" translatable="yes">Problema de optimización combinatoria, es
+ decir, que busca la mejor solución entre un
+ conjunto finito de posibles soluciones a un
+ problema.</property>
                 <signal name="clicked" handler="btn_algoritmo2_clicked_cb" swapped="no"/>
               </object>
               <packing>
@@ -71,13 +76,14 @@
             </child>
             <child>
               <object class="GtkButton" id="btn_algoritmo4">
-                <property name="label" translatable="yes">Arboles Binarios de
- Busqueda Optimos</property>
+                <property name="label" translatable="yes">Árboles Binarios de
+ Búsqueda Optimos</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Arboles Binarios de
- Busqueda Optimos</property>
+                <property name="tooltip_text" translatable="yes">Cumple que el subárbol izquierdo de cualquier nodo (si no está vacío) 
+contiene valores menores que el que contiene dicho nodo, y el subárbol derecho 
+(si no está vacío) contiene valores mayores.</property>
                 <signal name="clicked" handler="btn_algoritmo4_clicked_cb" swapped="no"/>
               </object>
               <packing>
@@ -104,11 +110,14 @@
             </child>
             <child>
               <object class="GtkButton" id="btn_algoritmo6">
-                <property name="label" translatable="yes">Multiplicacion de Matrices</property>
+                <property name="label" translatable="yes">Multiplicación de Matrices</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Multiplicaicion de Matrices</property>
+                <property name="tooltip_text" translatable="yes"> Operación de composición efectuada entre dos
+ matrices, o bien la multiplicación entre una
+ matriz y un escalar según unas determinadas
+ reglas.</property>
                 <signal name="clicked" handler="btn_algoritmo6_clicked_cb" swapped="no"/>
               </object>
               <packing>
