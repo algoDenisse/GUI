@@ -63,11 +63,11 @@ void on_window_main_destroy()
 
 void on_btn_algoritmo1_clicked()
 {
-    gtk_label_set_text(GTK_LABEL(label_test), "Esto es una pruebaa!");
+    //gtk_label_set_text(GTK_LABEL(label_test), "Esto es una pruebaa!");
     /*system("cd /home/compiladores/GUI/src");*/
     //system("gcc pending_program.c -o pending_program -pthread pkg-config -cflags -libs gtk+-3.0 -export-dynamic");
     //system("gcc -o pending_program pending_program.o");
-    system("./pending_program &");
+    system("./floyd &");
 
 }
 
