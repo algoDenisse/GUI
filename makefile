@@ -36,15 +36,15 @@ all: $(OBJS) $(POBJ) $(FOBJ)
 
 main.o: src/main.c
 
-	$(CC) -c $(CCFLAGS) src/main.c $(GTKLIB) -o main.o
+	$(CC) -c $(CCFLAGS) src/main.c $(GTKLIB) -o main.o -w
 
 pending_program.o: src/pending_program.c
 
-	$(CC) -c $(CCFLAGS) src/pending_program.c $(GTKLIB) -o pending_program.o
+	$(CC) -c $(CCFLAGS) src/pending_program.c $(GTKLIB) -o pending_program.o -w
 
 floyd.o: src/floyd.c
 
-	$(CC) -c $(CCFLAGS) src/floyd.c $(GTKLIB) -o floyd.o
+	$(CC) -c $(CCFLAGS) src/floyd.c $(GTKLIB) -o floyd.o -w
 
 
 

@@ -7,11 +7,12 @@ int main(int argc, char *argv[])
   GtkBuilder      *floyd_builder;
   GtkWidget       *floyd_window;
   GtkWidget       *table;
-  GtkWidget       *entry1;
-  GtkEntryBuffer  *buffer1;
-  char str[15];
+  
+  //GtkWidget       *entry1;
+  //GtkEntryBuffer  *buffer1;
 
-  int i,j;
+
+  //int i,j;
 
 
 
@@ -34,20 +35,32 @@ GdkScreen *screen;
   gtk_grid_set_row_spacing (GTK_GRID (table), 2);
   gtk_container_add (GTK_CONTAINER (floyd_window), table);
 
+  //buffer1= gtk_entry_buffer_new(NULL,-1);
+  //entry1 = gtk_entry_new_with_buffer(buffer1);
+  GtkWidget ***entrada;
 
-  for(i=0;i<=5;i++){
-    for(j=0;j<=5;j++){
-      buffer1= gtk_entry_buffer_new(NULL,-1);
 
-      entry1 = gtk_entry_new_with_buffer(buffer1);
-      gtk_grid_attach (GTK_GRID (table),entry1 , i, j, 1, 1);
+  int n=10;
+  int j,k;
+  entrada=calloc(n,sizeof(GtkWidget**));
+  for(j = 0; j < n; j++){
 
+
+    entrada[j]=calloc(n,sizeof(GtkWidget*));
+
+
+  }
+  for(k =0; k< n;k++){
+    for(j=0;j<n;j++){
+
+      entrada[k][j]= gtk_entry_new();
+      gtk_grid_attach (GTK_GRID (table),entrada[k][j] , k, j, 1, 1);
+      if(k==j){
+        gtk_entry_set_text (entrada[k][j],"0");
+      }
 
     }
   }
-
-
-
 
 
   provider = gtk_css_provider_new ();
