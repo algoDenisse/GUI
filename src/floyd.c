@@ -1,11 +1,48 @@
 #include <gtk/gtk.h>
 
 GtkWidget       *entry_grid_size;
+int n;
+
+static void generate_D1 (GtkWidget *widget, gpointer   data){
+    GtkWidget  *entrada;
+    entrada = gtk_entry_new();
+
+    //char *column_names[n];
+    char *column_names = calloc(n, 100*sizeof(char));
+
+    int distancias[n];
+    int matriz_distancias[n][n];
+
+
+    int j,k,i, g =0;
+
+    for(k =0; k< n+1;k++){
+      for(j=0;j<n+1;j++){
+        entrada = gtk_grid_get_child_at (data, j, k);
+
+        //Guardamos valor de las column_names
+        if (k !=0 && j == 0){
+          printf("%s\n",gtk_entry_get_text(entrada) );
+          g_stpcpy(column_names[i],gtk_entry_get_text(entrada));
+          //printf("column -> %s\n", column_names[i] );
+          i++;
+        }
+       if (k !=0 && j != 0){
+
+       }
+    }
+    //gtk_widget_hide (widget);
+}
+
+}
+
 
 void button_crear_grid_clicked_cb(){
   GtkBuilder      *floyd_builder;
   GtkWidget       *floyd_window;
   GtkWidget       *table;
+  GtkWidget       *button;
+  GtkWidget       *button_box;
 
   const char *alphabet[27]={"A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
 
@@ -24,26 +61,23 @@ GdkScreen *screen;
 
 
   table= gtk_grid_new();
-
   gtk_grid_set_row_spacing (GTK_GRID (table), 2);
   gtk_container_add (GTK_CONTAINER (floyd_window), table);
+
+
 
 
   GtkWidget ***entrada;
 
   printf("%s\n",gtk_entry_get_text (entry_grid_size) );
 
-  int n=atoi(gtk_entry_get_text (entry_grid_size));
+  n = atoi(gtk_entry_get_text (entry_grid_size));
   //gtk_entry_get_text (entry_grid_size);
 
   int j,k,i;
   entrada=calloc(n+1,sizeof(GtkWidget**));
   for(j = 0; j < n+1; j++){
-
-
     entrada[j]=calloc(n+1,sizeof(GtkWidget*));
-
-
   }
   for(k =0; k< n+1;k++){
     for(j=0;j<n+1;j++){
@@ -59,12 +93,15 @@ GdkScreen *screen;
       if (j ==0 && k!=0){
         gtk_entry_set_text (entrada[k][j],alphabet[k-1]);
       }
-
-
-
     }
   }
 
+  button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+  gtk_grid_attach (GTK_GRID (table),button_box , n/2, j, 1, 1);
+
+  button = gtk_button_new_with_label ("Generar D(1)");
+  g_signal_connect (button, "clicked", G_CALLBACK (generate_D1), (gpointer) table);
+  gtk_container_add (GTK_CONTAINER (button_box), button);
 
 
   provider = gtk_css_provider_new ();
@@ -80,15 +117,18 @@ GdkScreen *screen;
 
   gtk_css_provider_load_from_path (provider,
                                     g_filename_to_utf8(home, strlen(home), &bytes_read, &bytes_written, &error),
-                                    NULL);
+                                  NULL);
 
   g_object_unref(floyd_builder);
+
 
 
 
   gtk_widget_show_all(floyd_window);
 
 }
+
+
 
 int main(int argc, char *argv[])
 {
