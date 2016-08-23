@@ -2,27 +2,38 @@
 #define INF 99999
 GtkWidget       *entry_grid_size;
 int n;
+int **global_distance_mtx;
 
 static void generate_D1 (GtkWidget *widget, gpointer   data){
     GtkWidget  *entrada;
     gchar* entrance;
     entrada = gtk_entry_new();
+    int i;
+    //alojar memoria matriz global
+    printf("%s\n"," alojar memoria matriz global");
+    global_distance_mtx = calloc(n, 1+sizeof(int*));
+    for (i = 0; i < n; ++i) {
+        global_distance_mtx[i] = calloc(n,sizeof(int));
+    }
 
     //alojamos la menmoria para el array
+      printf("%s\n","alojamos la menmoria para el array");
     char **column_names =  calloc(n, 500*sizeof(gchar));
     //alojamos la memoria para cada espacio del char
-    int i;
+
     for (i = 0; i < n; ++i) {
         column_names[i] = (char *)malloc(500);
     }
     entrance = calloc(1, 500*sizeof(gchar));
 
-    //alojamos memoria de la matriz de distancias
+    //alojamos memoria de lamatriz de distancias
     int **matriz_distancias = calloc(n, 1+sizeof(int*));
 
     for (i = 0; i < n; ++i) {
-        matriz_distancias[i] = (int *)malloc(500);
+        matriz_distancias[i] = calloc(n,sizeof(int));
     }
+
+
 
     int j,k;
     i=0;
@@ -42,6 +53,7 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
         //GUardamos el valor de los numeros en la matriz
         if (k!=0 && j!=0){
           if (strcmp(entrance, "INF")==0){
+            //printf("%s\n","Encontre un infinito!" );
             matriz_distancias[j-1][k-1]  = 99999;
           }
           else{
@@ -52,63 +64,58 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
         }
     }
 
-
-    //FALTA LIBERAR LA MEMORIA DE LOS ARRAYS!
-
-
 }
-//
-// for (i = 0; i < n; i++)
-//     for (j = 0; j < n; j++)
-//         printf("%d\n",matriz_distancias[i][j] );;
-  generate_Dn(*matriz_distancias);
-  gtk_widget_hide (widget);
+  printf("%s\n","VOY A GENERAR LA MATRIZ" );
+  generate_Dn(matriz_distancias, 1);
+  //gtk_widget_hide (widget);
+  free(entrance);
+  free_memory(matriz_distancias, column_names);
 }
 
 
-void generate_Dn(int * graph[][n]){
 
-    int dist[n][n], i, j, k;
-  for (i = 0; i < n; i++)
-      for (j = 0; j < n; j++)
-          printf("%d\n",graph[i][j] );;
+void free_memory(int **graph, char **nodes){
+  //Libera los datos de la matriz_distancias
+  free(graph);
+  free(nodes);
 
+}
 
-   /* Initialize the solution matrix same as input graph matrix. Or
-      we can say the initial values of shortest distances are based
-      on shortest paths considering no intermediate vertex. */
+void generate_Dn(int  **graph, int table_number){
+  int dist[n][n], i, j, k;
+
    for (i = 0; i < n; i++)
        for (j = 0; j < n; j++)
            dist[i][j] = graph[i][j];
 
-   /* Add all vertices one by one to the set of intermediate vertices.
-     ---> Before start of a iteration, we have shortest distances between all
-     pairs of vertices such that the shortest distances consider only the
-     vertices in set {0, 1, 2, .. k-1} as intermediate vertices.
-     ----> After the end of a iteration, vertex no. k is added to the set of
-     intermediate vertices and the set becomes {0, 1, 2, .. k} */
-   for (k = 0; k < n; k++)
-   {
-       // Pick all vertices as source one by one
        for (i = 0; i < n; i++)
        {
-           // Pick all vertices as destination for the
-           // above picked source
            for (j = 0; j < n; j++)
            {
-               // If vertex k is on the shortest path from
-               // i to j, then update the value of dist[i][j]
-               if (dist[i][k] + dist[k][j] < dist[i][j])
-                   dist[i][j] = dist[i][k] + dist[k][j];
-                  // printf("Distancia [%d][%d] = %d\n",i, j,  dist[i][j]);
+              //  printf("dist[%d][%d] = %d\n",i, j, dist[i][j]);
+              //  printf("dist[%d][table_number-1] + dist[table_number-1][%d] = %d\n",i, i, j, dist[i][table_number-1] + dist[table_number-1][j]);
+
+               if(i != table_number -1 && j != table_number -1){
+                 if (dist[i][table_number-1] + dist[table_number-1][j] < dist[i][j])
+                     dist[i][j] = dist[i][table_number-1] + dist[table_number-1][j];
+               }
            }
-       }
    }
-   // Print the shortest distance matrix
-   //printSolution(dist);
+   //copio la solucion en el global distance matrix
+   update_global_mtx(dist);
+   printSolution(global_distance_mtx);
 }
 
-void printSolution(int dist[][n])
+
+void update_global_mtx(int dist[][n]){
+  int i, j;
+  for (i = 0; i < n; i++)
+      for (j = 0; j < n; j++)
+          global_distance_mtx[i][j] = dist[i][j];
+}
+
+
+void printSolution(int  **dist)
 {
     printf ("Following matrix shows the shortest distances"
             " between every pair of vertices \n");
