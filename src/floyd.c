@@ -5,32 +5,52 @@ int n;
 
 static void generate_D1 (GtkWidget *widget, gpointer   data){
     GtkWidget  *entrada;
+    gchar* entrance;
     entrada = gtk_entry_new();
 
-    //char *column_names[n];
-    char *column_names = calloc(n, 100*sizeof(char));
+    //alojamos la menmoria para el array
+    char **column_names =  calloc(n, 500*sizeof(gchar));
+    //alojamos la memoria para cada espacio del char
+    int i;
+    for (i = 0; i < n; ++i) {
+        column_names[i] = (char *)malloc(500);
+    }
+    entrance = calloc(1, 500*sizeof(gchar));
 
-    int distancias[n];
-    int matriz_distancias[n][n];
+    //alojamos memoria de la matriz de distancias
+    int **matriz_distancias = calloc(n, 1+sizeof(int*));
+
+    for (i = 0; i < n; ++i) {
+        matriz_distancias[i] = (int *)malloc(500);
+    }
 
 
-    int j,k,i, g =0;
-
+    int j,k;
+    i=0;
     for(k =0; k< n+1;k++){
+      //printf("Entro al primer FOR\n" );
       for(j=0;j<n+1;j++){
-        entrada = gtk_grid_get_child_at (data, j, k);
-
+        //printf("Entro al segundo FOR\n" );
+        entrada = gtk_grid_get_child_at (data, k, j);
+        g_stpcpy(entrance,gtk_entry_get_text(entrada));
         //Guardamos valor de las column_names
-        if (k !=0 && j == 0){
-          printf("%s\n",gtk_entry_get_text(entrada) );
-          g_stpcpy(column_names[i],gtk_entry_get_text(entrada));
-          //printf("column -> %s\n", column_names[i] );
+        if (k ==0 && j != 0){
+
+          column_names[i] = entrance;
+          printf("NOmbre de la columna posicion %d, %d = %s\n",j, k ,entrance);
           i++;
         }
-       if (k !=0 && j != 0){
+        //GUardamos el valor de los numeros en la matriz
+        if (k!=0 && j!=0){
+          matriz_distancias[j-1][k-1] = atoi(entrance);
+            printf("Valor de la entrada %d, %d = %d\n",j, k, atoi(entrance));
 
-       }
+        }
     }
+
+    //FALTA LIBERAR LA MEMORIA DE LOS ARRAYS!
+
+
     //gtk_widget_hide (widget);
 }
 
