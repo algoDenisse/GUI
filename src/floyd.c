@@ -3,6 +3,7 @@
 GtkWidget       *entry_grid_size;
 
 int n;
+int numeroDeTabla= 1;
 int **global_distance_mtx;
 char **column_names;
 const char *alphabet[27]={"A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
@@ -69,14 +70,81 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
   // for(i = 0; i < n ; i++){
   //   printf("Columna %s\n", column_names[i] );
   // }
-  generate_Dn(matriz_distancias, 1);
-  create_new_grid(global_distance_mtx, 1);
+  generate_Dn(matriz_distancias, numeroDeTabla);
+  create_new_grid(global_distance_mtx, numeroDeTabla);
   gtk_widget_hide (widget);
   free(entrance);
   free_memory(matriz_distancias, column_names);
 }
 
+void guardarMatrizDistancia (GtkWidget *widget, gpointer   data){
+  GtkWidget  *entrada;
+  gchar* entrance;
+  entrada = gtk_entry_new();
+  int i;
+  entrance = calloc(1, 500*sizeof(gchar));
+
+  column_names =  calloc(n, 500*sizeof(gchar));
+  for (i = 0; i < n; ++i) {
+      column_names[i] = (char *)malloc(500);
+  }
+
+  //alojamos memoria de lamatriz de distancias
+  int **matriz_distancias = calloc(n, 1+sizeof(int*));
+
+  for (i = 0; i < n; ++i) {
+      matriz_distancias[i] = calloc(n,sizeof(int));
+  }
+  int j,k;
+  i=0;
+  for(k =0; k< n+1;k++){
+    //printf("Entro al primer FOR\n" );
+    for(j=0;j<n+1;j++){
+      //printf("Entro al segundo FOR\n" );
+      entrada = gtk_grid_get_child_at (data, k, j);
+      g_stpcpy(entrance,gtk_entry_get_text(entrada));
+      printf("D2 _%s\n",entrance);
+
+      if (k !=0 && j == 0){
+        strcpy(column_names[i],entrance);
+      //  printf("Nombre de la columna posicion %d, %d = %s\n",j, k ,entrance);
+        i++;
+      }
+
+      // //GUardamos el valor de los numeros en la matriz
+      if (k!=0 && j!=0){
+        if (strcmp(entrance, "INF")==0){
+          //printf("%s\n","Encontre un infinito!" );
+          matriz_distancias[j-1][k-1]  = 99999;
+        }
+        else{
+          matriz_distancias[j-1][k-1] = atoi(entrance);
+          //  printf("Valor de la entrada %d, %d = %d\n",j, k, atoi(entrance));
+        }
+
+      }
+  }
+
+}
+printf("numeroDeTabla %d\n",numeroDeTabla );
+//Llevar un contador global! de las iteraciones y parar cunado se llegue a n
+
+ if (numeroDeTabla > n){
+   printf("No hay mas tablas por generar\n" );
+
+ }
+ else{
+   generate_Dn(matriz_distancias, numeroDeTabla);
+   create_new_grid(global_distance_mtx, numeroDeTabla);
+ }
+ // gtk_widget_hide (widget);
+ // free(entrance);
+ //free_memory(matriz_distancias, column_names);
+}
+
 void create_new_grid(int **global_distance_mtx, int table_number){
+  if(table_number > 1)
+    printf("Estoy entrando por segunda veeez\n" );
   GtkWidget *window;
   GtkWidget *table;
   GtkWidget       *button;
@@ -127,12 +195,12 @@ void create_new_grid(int **global_distance_mtx, int table_number){
          gtk_entry_set_text (entrada[k][j],"0");
        }
        if (k == 0 && j != 0){
-         //printf("column_names[j-1 %d] = %s\n",j-1, column_names[j-1] );
+        printf("column_names[j-1 %d] = %s\n",j-1, column_names[j-1] );
          gtk_entry_set_text (entrada[k][j],column_names[j-1]);
        }
        if (j ==0 && k!=0){
-        // printf("column_names[k-1 %d] = %s\n",k-1, column_names[k-1] );
-         gtk_entry_set_text (entrada[k][j],column_names[k-1]);
+         printf("column_names[k-1 %d] = %s\n",k-1, column_names[k-1] );
+        gtk_entry_set_text (entrada[k][j],column_names[k-1]);
        }
        if (k != 0 && j != 0){
          if (global_distance_mtx[k-1][j-1] == INF)
@@ -154,12 +222,17 @@ void create_new_grid(int **global_distance_mtx, int table_number){
    strcat(title, ")");
 
    button = gtk_button_new_with_label (title);
-   //g_signal_connect (button, "clicked", G_CALLBACK (generate_D1), (gpointer) table);
+   g_signal_connect (button, "clicked", G_CALLBACK (guardarMatrizDistancia), (gpointer) table);
    gtk_container_add (GTK_CONTAINER (button_box), button);
 
+   //funcion guardarMatrizDistancia(button, table);
+   numeroDeTabla ++;
    gtk_widget_show_all(window);
 
 }
+
+
+
 
 
 void free_memory(int **graph, char **nodes){
@@ -171,6 +244,8 @@ void free_memory(int **graph, char **nodes){
 
 void generate_Dn(int  **graph, int table_number){
   int dist[n][n], i, j, k;
+
+
 
    for (i = 0; i < n; i++)
        for (j = 0; j < n; j++)
