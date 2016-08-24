@@ -79,6 +79,8 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
 void create_new_grid(int **global_distance_mtx, int table_number){
   GtkWidget *window;
   GtkWidget *table;
+  GtkWidget       *button;
+  GtkWidget       *button_box;
   char cell_value[5];
 
   /* create a new window */
@@ -142,6 +144,18 @@ void create_new_grid(int **global_distance_mtx, int table_number){
        }
      }
    }
+
+   button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+   gtk_grid_attach (GTK_GRID (table),button_box , n/2, j, 1, 1);
+
+   strcpy(title, "Generar D(");
+   snprintf(str,5,"%d",table_number+1);
+   strcat(title, str);
+   strcat(title, ")");
+
+   button = gtk_button_new_with_label (title);
+   //g_signal_connect (button, "clicked", G_CALLBACK (generate_D1), (gpointer) table);
+   gtk_container_add (GTK_CONTAINER (button_box), button);
 
    gtk_widget_show_all(window);
 
