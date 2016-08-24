@@ -1,8 +1,12 @@
 #include <gtk/gtk.h>
 #define INF 99999
 GtkWidget       *entry_grid_size;
+
 int n;
 int **global_distance_mtx;
+char **column_names;
+const char *alphabet[27]={"A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+
 
 static void generate_D1 (GtkWidget *widget, gpointer   data){
     GtkWidget  *entrada;
@@ -18,7 +22,7 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
 
     //alojamos la menmoria para el array
       printf("%s\n","alojamos la menmoria para el array");
-    char **column_names =  calloc(n, 500*sizeof(gchar));
+    column_names =  calloc(n, 500*sizeof(gchar));
     //alojamos la memoria para cada espacio del char
 
     for (i = 0; i < n; ++i) {
@@ -32,9 +36,6 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
     for (i = 0; i < n; ++i) {
         matriz_distancias[i] = calloc(n,sizeof(int));
     }
-
-
-
     int j,k;
     i=0;
     for(k =0; k< n+1;k++){
@@ -44,9 +45,9 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
         entrada = gtk_grid_get_child_at (data, k, j);
         g_stpcpy(entrance,gtk_entry_get_text(entrada));
         //Guardamos valor de las column_names
-        if (k ==0 && j != 0){
+        if (k !=0 && j == 0){
 
-          column_names[i] = entrance;
+          strcpy(column_names[i],entrance);
         //  printf("Nombre de la columna posicion %d, %d = %s\n",j, k ,entrance);
           i++;
         }
@@ -65,13 +66,86 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
     }
 
 }
-  printf("%s\n","VOY A GENERAR LA MATRIZ" );
+  // for(i = 0; i < n ; i++){
+  //   printf("Columna %s\n", column_names[i] );
+  // }
   generate_Dn(matriz_distancias, 1);
-  //gtk_widget_hide (widget);
+  create_new_grid(global_distance_mtx, 1);
+  gtk_widget_hide (widget);
   free(entrance);
   free_memory(matriz_distancias, column_names);
 }
 
+void create_new_grid(int **global_distance_mtx, int table_number){
+  GtkWidget *window;
+  GtkWidget *table;
+  char cell_value[5];
+
+  /* create a new window */
+   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+   char title[20];
+   char str[5];
+   strcpy(title, "D(");
+   snprintf(str,5,"%d",table_number);
+   strcat(title, str);
+   strcat(title, ")");
+   gtk_window_set_title (GTK_WINDOW (window), title);
+
+   // create new table
+   table= gtk_grid_new();
+   gtk_grid_set_row_spacing (GTK_GRID (table), 2);
+   gtk_container_add (GTK_CONTAINER (window), table);
+
+   //alojamos espacio para cada entrada de la matriz
+   GtkWidget ***entrada;
+   int j,k,i;
+   entrada=calloc(n+1,sizeof(GtkWidget**));
+   for(j = 0; j < n+1; j++){
+     entrada[j]=calloc(n+1,sizeof(GtkWidget*));
+   }
+   printf("A ver si podemos acceder a los datos\n" );
+   for (i = 0; i < n; i++)
+   {
+       for ( j = 0; j < n; j++)
+       {
+         if (global_distance_mtx[i][j] == INF)
+               printf("%7s", "INF");
+           else
+               printf ("%7d", global_distance_mtx[i][j]);
+       }
+       printf("\n");
+   }
+
+   for(k =0; k< n+1;k++){
+     for(j=0;j<n+1;j++){
+
+       entrada[k][j]= gtk_entry_new();
+       gtk_grid_attach (GTK_GRID (table),entrada[k][j] , k, j, 1, 1);
+       if(k==j && k != 0 && j != 0){
+         gtk_entry_set_text (entrada[k][j],"0");
+       }
+       if (k == 0 && j != 0){
+         //printf("column_names[j-1 %d] = %s\n",j-1, column_names[j-1] );
+         gtk_entry_set_text (entrada[k][j],column_names[j-1]);
+       }
+       if (j ==0 && k!=0){
+        // printf("column_names[k-1 %d] = %s\n",k-1, column_names[k-1] );
+         gtk_entry_set_text (entrada[k][j],column_names[k-1]);
+       }
+       if (k != 0 && j != 0){
+         if (global_distance_mtx[k-1][j-1] == INF)
+            strcpy(cell_value, "INF");
+         else{
+           snprintf(cell_value,5,"%d",global_distance_mtx[j-1][k-1]);
+         }
+         gtk_entry_set_text (entrada[k][j], cell_value);
+       }
+     }
+   }
+
+   gtk_widget_show_all(window);
+
+}
 
 
 void free_memory(int **graph, char **nodes){
@@ -92,8 +166,6 @@ void generate_Dn(int  **graph, int table_number){
        {
            for (j = 0; j < n; j++)
            {
-              //  printf("dist[%d][%d] = %d\n",i, j, dist[i][j]);
-              //  printf("dist[%d][table_number-1] + dist[table_number-1][%d] = %d\n",i, i, j, dist[i][table_number-1] + dist[table_number-1][j]);
 
                if(i != table_number -1 && j != table_number -1){
                  if (dist[i][table_number-1] + dist[table_number-1][j] < dist[i][j])
@@ -103,7 +175,7 @@ void generate_Dn(int  **graph, int table_number){
    }
    //copio la solucion en el global distance matrix
    update_global_mtx(dist);
-   printSolution(global_distance_mtx);
+   //printSolution(global_distance_mtx);
 }
 
 
@@ -135,13 +207,13 @@ void printSolution(int  **dist)
 
 
 void button_crear_grid_clicked_cb(){
+
   GtkBuilder      *floyd_builder;
   GtkWidget       *floyd_window;
   GtkWidget       *table;
   GtkWidget       *button;
   GtkWidget       *button_box;
 
-  const char *alphabet[27]={"A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
 
   /*--- CSS -----------------*/
 GtkCssProvider *provider;
@@ -155,13 +227,9 @@ GdkScreen *screen;
   floyd_window = GTK_WIDGET(gtk_builder_get_object(floyd_builder, "floyd_window"));
   gtk_builder_connect_signals(floyd_builder, NULL);
 
-
-
   table= gtk_grid_new();
   gtk_grid_set_row_spacing (GTK_GRID (table), 2);
   gtk_container_add (GTK_CONTAINER (floyd_window), table);
-
-
 
 
   GtkWidget ***entrada;
@@ -169,7 +237,6 @@ GdkScreen *screen;
   printf("%s\n",gtk_entry_get_text (entry_grid_size) );
 
   n = atoi(gtk_entry_get_text (entry_grid_size));
-  //gtk_entry_get_text (entry_grid_size);
 
   int j,k,i;
   entrada=calloc(n+1,sizeof(GtkWidget**));
@@ -217,9 +284,6 @@ GdkScreen *screen;
                                   NULL);
 
   g_object_unref(floyd_builder);
-
-
-
 
   gtk_widget_show_all(floyd_window);
 
