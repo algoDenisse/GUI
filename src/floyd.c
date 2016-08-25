@@ -65,14 +65,10 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
 
         }
     }
-
 }
-  // for(i = 0; i < n ; i++){
-  //   printf("Columna %s\n", column_names[i] );
-  // }
   generate_Dn(matriz_distancias, numeroDeTabla);
   create_new_grid(global_distance_mtx, numeroDeTabla);
-  gtk_widget_hide (widget);
+  gtk_widget_set_sensitive (widget, FALSE);
   free(entrance);
   free_memory(matriz_distancias, column_names);
 }
@@ -137,7 +133,7 @@ printf("numeroDeTabla %d\n",numeroDeTabla );
    generate_Dn(matriz_distancias, numeroDeTabla);
    create_new_grid(global_distance_mtx, numeroDeTabla);
  }
- // gtk_widget_hide (widget);
+gtk_widget_set_sensitive (widget, FALSE);
  // free(entrance);
  //free_memory(matriz_distancias, column_names);
 }
@@ -189,18 +185,29 @@ void create_new_grid(int **global_distance_mtx, int table_number){
    for(k =0; k< n+1;k++){
      for(j=0;j<n+1;j++){
 
-       entrada[k][j]= gtk_entry_new();
+       entrada[k][j]= gtk_entry_new ();
        gtk_grid_attach (GTK_GRID (table),entrada[k][j] , k, j, 1, 1);
+
        if(k==j && k != 0 && j != 0){
-         gtk_entry_set_text (entrada[k][j],"0");
+         gtk_entry_set_text(entrada[k][j],"0");
+         gtk_widget_set_sensitive (entrada[k][j], FALSE);
+
        }
        if (k == 0 && j != 0){
         printf("column_names[j-1 %d] = %s\n",j-1, column_names[j-1] );
-         gtk_entry_set_text (entrada[k][j],column_names[j-1]);
+          gtk_widget_set_name(entrada[k][j], "column_name");
+          gtk_entry_set_text (entrada[k][j],column_names[j-1]);
+          gtk_widget_set_sensitive (entrada[k][j], FALSE);
+
+
        }
        if (j ==0 && k!=0){
          printf("column_names[k-1 %d] = %s\n",k-1, column_names[k-1] );
-        gtk_entry_set_text (entrada[k][j],column_names[k-1]);
+         gtk_widget_set_name(entrada[k][j], "column_name");
+         gtk_entry_set_text(entrada[k][j],column_names[k-1]);
+         gtk_widget_set_sensitive (entrada[k][j], FALSE);
+
+
        }
        if (k != 0 && j != 0){
          if (global_distance_mtx[k-1][j-1] == INF)
@@ -208,7 +215,8 @@ void create_new_grid(int **global_distance_mtx, int table_number){
          else{
            snprintf(cell_value,5,"%d",global_distance_mtx[j-1][k-1]);
          }
-         gtk_entry_set_text (entrada[k][j], cell_value);
+          gtk_entry_set_text (entrada[k][j], cell_value);
+          gtk_widget_set_sensitive (entrada[k][j], FALSE);
        }
      }
    }
@@ -245,8 +253,6 @@ void free_memory(int **graph, char **nodes){
 void generate_Dn(int  **graph, int table_number){
   int dist[n][n], i, j, k;
 
-
-
    for (i = 0; i < n; i++)
        for (j = 0; j < n; j++)
            dist[i][j] = graph[i][j];
@@ -255,7 +261,6 @@ void generate_Dn(int  **graph, int table_number){
        {
            for (j = 0; j < n; j++)
            {
-
                if(i != table_number -1 && j != table_number -1){
                  if (dist[i][table_number-1] + dist[table_number-1][j] < dist[i][j])
                      dist[i][j] = dist[i][table_number-1] + dist[table_number-1][j];
@@ -278,8 +283,6 @@ void update_global_mtx(int dist[][n]){
 
 void printSolution(int  **dist)
 {
-    printf ("Following matrix shows the shortest distances"
-            " between every pair of vertices \n");
     int i,j;
     for (i = 0; i < n; i++)
     {
@@ -339,11 +342,14 @@ GdkScreen *screen;
       gtk_grid_attach (GTK_GRID (table),entrada[k][j] , k, j, 1, 1);
       if(k==j && k != 0 && j != 0){
         gtk_entry_set_text (entrada[k][j],"0");
+        gtk_widget_set_sensitive (entrada[k][j], FALSE);
       }
       if (k == 0 && j != 0){
+        gtk_widget_set_name(entrada[k][j], "column_name");
         gtk_entry_set_text (entrada[k][j],alphabet[j-1]);
       }
       if (j ==0 && k!=0){
+        gtk_widget_set_name(entrada[k][j], "column_name");
         gtk_entry_set_text (entrada[k][j],alphabet[k-1]);
       }
     }

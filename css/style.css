@@ -74,7 +74,28 @@ background-image: -gtk-gradient (linear,
   font: Sanz 11;
 }
 
+
+#column_name{
+  font: Sanz 12;
+  font-weight: bold;
+}
+
+#cell_label{
+  color: white;
+  font: Sanz 12;
+  background-image: linear-gradient(rgba(192,192,192, 0.5));
+}
+
+#column_label{
+  color: white;
+  font: Sanz 12;
+  font-weight: bold;
+}
+
+#non_editable_table{
+  padding-right: 20px;
+  padding-left: 20px;
+}
 .tooltip {
   color: white;
 }
-  
