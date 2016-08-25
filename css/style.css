@@ -103,6 +103,14 @@ background-image: -gtk-gradient (linear,
   font-weight: bold;
 
 }
+#no_change{
+  color: black;
+}
+
+#tp_cell{
+  background-image: linear-gradient(grey);
+  color: white;
+}
 .tooltip {
   color: white;
 }

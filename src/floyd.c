@@ -1,7 +1,8 @@
 #include <gtk/gtk.h>
 #define INF 99999
 GtkWidget       *entry_grid_size;
-
+GtkWidget *PTable_window;
+GtkWidget *table_pt;
 int n;
 int numeroDeTabla= 1;
 int **previous_distance_mtx;
@@ -16,7 +17,7 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
     entrada = gtk_entry_new();
     int i;
     //alojar memoria matriz global
-    printf("%s\n"," alojar memoria matriz global");
+
     global_distance_mtx = calloc(n, 1+sizeof(int*));
     previous_distance_mtx = calloc(n, 1+sizeof(int*));
     for (i = 0; i < n; ++i) {
@@ -25,7 +26,7 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
     }
 
     //alojamos la menmoria para el array
-      printf("%s\n","alojamos la menmoria para el array");
+
     column_names =  calloc(n, 500*sizeof(gchar));
     //alojamos la memoria para cada espacio del char
 
@@ -70,8 +71,10 @@ static void generate_D1 (GtkWidget *widget, gpointer   data){
     }
 }
   generate_Dn(matriz_distancias, numeroDeTabla);
+  create_PTable();
   create_new_grid(global_distance_mtx, numeroDeTabla);
   gtk_widget_set_sensitive (widget, FALSE);
+
   free(entrance);
   free_memory(matriz_distancias, column_names);
 }
@@ -141,14 +144,61 @@ gtk_widget_set_sensitive (widget, FALSE);
  //free_memory(matriz_distancias, column_names);
 }
 
+void create_PTable(){
+
+  PTable_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (PTable_window), "Tabla P");
+  // create new table
+  table_pt= gtk_grid_new();
+  gtk_grid_set_row_spacing (GTK_GRID (table_pt), 2);
+  gtk_container_add (GTK_CONTAINER (PTable_window), table_pt);
+
+  //alojamos espacio para cada entrada de la matriz
+  GtkWidget ***entrada;
+  int j,k,i;
+  entrada=calloc(n+1,sizeof(GtkWidget**));
+  for(j = 0; j < n+1; j++){
+    entrada[j]=calloc(n+1,sizeof(GtkWidget*));
+  }
+
+  for(k =0; k< n+1;k++){
+    for(j=0;j<n+1;j++){
+
+      entrada[k][j]= gtk_entry_new ();
+      gtk_widget_set_sensitive (entrada[k][j], FALSE);
+      gtk_widget_set_name(entrada[k][j], "tp_cell");
+      gtk_grid_attach (GTK_GRID (table_pt),entrada[k][j] , k, j, 1, 1);
+
+      if(k == 0 && j == 0){
+        gtk_widget_set_name(entrada[k][j], "column_label");
+      }
+      if (k == 0 && j != 0){
+         gtk_widget_set_name(entrada[k][j], "column_name");
+         gtk_entry_set_text (entrada[k][j],column_names[j-1]);
+      }
+      if (j ==0 && k!=0){
+        gtk_widget_set_name(entrada[k][j], "column_name");
+        gtk_entry_set_text(entrada[k][j],column_names[k-1]);
+      }
+
+      if (k != 0 && j != 0){
+                 gtk_entry_set_text (entrada[k][j], "0");
+
+      }
+    }
+  }
+  gtk_widget_show_all(PTable_window);
+}
+
 void create_new_grid(int **global_distance_mtx, int table_number){
-  if(table_number > 1)
-    printf("Estoy entrando por segunda veeez\n" );
   GtkWidget *window;
   GtkWidget *table;
   GtkWidget       *button;
   GtkWidget       *button_box;
+  GtkWidget  *pt_entrada;
+  pt_entrada = gtk_entry_new();
   char cell_value[5];
+  char pt_cell_value[5];
 
   /* create a new window */
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -172,23 +222,36 @@ void create_new_grid(int **global_distance_mtx, int table_number){
    for(j = 0; j < n+1; j++){
      entrada[j]=calloc(n+1,sizeof(GtkWidget*));
    }
-   printf("A ver si podemos acceder a los datos\n" );
-   for (i = 0; i < n; i++)
-   {
-       for ( j = 0; j < n; j++)
-       {
-         if (global_distance_mtx[i][j] == INF)
-               printf("%7s", "INF");
-           else
-               printf ("%7d", global_distance_mtx[i][j]);
-       }
-       printf("\n");
-   }
+  //  printf("Datos Globales\n" );
+  //  for (i = 0; i < n; i++)
+  //  {
+  //      for ( j = 0; j < n; j++)
+  //      {
+  //        if (global_distance_mtx[i][j] == INF)
+  //              printf("%7s", "INF");
+  //          else
+  //              printf ("%7d", global_distance_mtx[i][j]);
+  //      }
+  //      printf("\n");
+  //  }
+  //  printf("Datos Previous\n" );
+  //  for (i = 0; i < n; i++)
+  //  {
+  //      for ( j = 0; j < n; j++)
+  //      {
+  //        if (previous_distance_mtx[i][j] == INF)
+  //              printf("%7s", "INF");
+  //          else
+  //              printf ("%7d", previous_distance_mtx[i][j]);
+  //      }
+  //      printf("\n");
+  //  }
 
    for(k =0; k< n+1;k++){
      for(j=0;j<n+1;j++){
 
        entrada[k][j]= gtk_entry_new ();
+       gtk_widget_set_name(entrada[k][j], "no_change");
        gtk_widget_set_sensitive (entrada[k][j], FALSE);
        gtk_grid_attach (GTK_GRID (table),entrada[k][j] , k, j, 1, 1);
 
@@ -214,17 +277,41 @@ void create_new_grid(int **global_distance_mtx, int table_number){
 
        }
        if (k != 0 && j != 0){
-         if(global_distance_mtx[k-1][j-1] != previous_distance_mtx[k-1][j-1]){
+        // printf("Previous %d,%d = %d\n",k-1,j-1,previous_distance_mtx[k-1][j-1]);
+      //   printf("Global %d,%d = %d\n",k-1,j-1,global_distance_mtx[k-1][j-1] );
+
+        if(global_distance_mtx[k-1][j-1] != previous_distance_mtx[k-1][j-1]){
+           printf("%d es diferente a %d\n",global_distance_mtx[k-1][j-1], previous_distance_mtx[k-1][j-1] );
            gtk_widget_set_name(entrada[k][j], "new_val");
-         }
-
-         if (global_distance_mtx[k-1][j-1] == INF)
-            strcpy(cell_value, "INF");
-         else{
            snprintf(cell_value,5,"%d",global_distance_mtx[j-1][k-1]);
+           gtk_entry_set_text (entrada[k][j], cell_value);
          }
-          gtk_entry_set_text (entrada[k][j], cell_value);
+        else{
+          if (global_distance_mtx[k-1][j-1] == INF)
+                  strcpy(cell_value, "INF");
+          else{
+                 snprintf(cell_value,5,"%d",global_distance_mtx[j-1][k-1]);
+          }
+            gtk_widget_set_name(entrada[k][j], "no_change");
+           gtk_entry_set_text (entrada[k][j], cell_value);
+        }
 
+
+
+
+
+
+
+        //    // modificar entrada de la P table tambien
+        //    pt_entrada = gtk_grid_get_child_at (table_pt, k, j);
+        //    gtk_widget_set_name(pt_entrada, "new_val");
+        //    snprintf(pt_cell_value,5,"%d",table_number);
+        //    gtk_entry_set_text (pt_entrada, pt_cell_value );
+
+        //  else{
+
+
+      //   }
        }
      }
    }
